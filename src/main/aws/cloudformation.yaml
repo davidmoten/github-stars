@@ -157,11 +157,11 @@ Resources:
         Stage: !Ref ApiStage 
       Description: !Sub "${application} api usage plan"
       Quota:
-        Limit: 30000
+        Limit: 300000
         Period: MONTH
       Throttle:
-        BurstLimit: 3 # per second
-        RateLimit: 1 # per second
+        BurstLimit: 300 # per second
+        RateLimit: 100 # per second
       UsagePlanName: !Sub "${application}-usage-plan" 
 
   ApiKey: 
@@ -256,11 +256,11 @@ Resources:
                 httpMethod: "POST"
                 contentHandling: "CONVERT_TO_TEXT"
                 type: "aws"
-        #securityDefinitions:
-        #  api_key:
-        #    type: "apiKey"
-        #    name: "x-api-key"
-        #    in: "header"
+        securityDefinitions:
+          api_key:
+            type: "apiKey"
+            name: "x-api-key"
+            in: "header"
         definitions:
           Empty:
             type: "object"
