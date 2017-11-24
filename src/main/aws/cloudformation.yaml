@@ -256,11 +256,11 @@ Resources:
                 httpMethod: "POST"
                 contentHandling: "CONVERT_TO_TEXT"
                 type: "aws"
-        securityDefinitions:
-          api_key:
-            type: "apiKey"
-            name: "x-api-key"
-            in: "header"
+        #securityDefinitions:
+        #  api_key:
+        #    type: "apiKey"
+        #    name: "x-api-key"
+        #    in: "header"
         definitions:
           Empty:
             type: "object"
