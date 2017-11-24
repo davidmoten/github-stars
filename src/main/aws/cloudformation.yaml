@@ -21,6 +21,10 @@ Parameters:
     Default: application
     Type: String
     
+  applicationBucket:
+    Default: application-data
+    Type: String
+    
   handler:
     Default: com.github.davidmoten.apig.example.Handler::handle
     Type: String
@@ -30,6 +34,29 @@ Parameters:
     Type: String
 
 Resources:
+
+  LambdaScheduleRule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: !Sub "${application}-schedule-rule"
+      ScheduleExpression: "rate(1 hour)"
+      Targets:
+        - Id: !Sub "${application}-schedule-rule-target"
+          Arn: !GetAtt
+            - LambdaFunction
+            - Arn 
+
+  InvokeLambdaPermission: 
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !GetAtt
+        - LambdaFunction
+        - Arn 
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: !GetAtt
+        - LambdaScheduleRule
+        - Arn 
 
   LambdaFunctionRole:
     Type: 'AWS::IAM::Role'
@@ -44,6 +71,24 @@ Resources:
                 - lambda.amazonaws.com
             Action:
               - 'sts:AssumeRole'
+      Policies:
+        # don't bother with modal name because is embedded policy
+        - PolicyName: s3-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:CreateBucket'
+                  - 's3:ListBucketVersions'
+                  - 's3:ListBucket'
+                  - 's3:GetObjectVersion'
+                  - 's3:GetObject'
+                  - 's3:PutObject'
+                Resource:
+                  - !Sub 'arn:aws:s3:::${applicationBucket}/*'
+                  - !Sub 'arn:aws:s3:::${applicationBucket}'
+        
 
   LambdaFunction:
     Type: AWS::Lambda::Function
@@ -62,6 +107,7 @@ Resources:
       Environment:
         Variables:
           WHO: !Sub "${application}"
+          BUCKET_NAME: !Sub "${applicationBucket}"
           
   ## give the /do api gateway resource permission to execute the lambda
   ApiGatewayInvokeApiGetLambdaPermission: 

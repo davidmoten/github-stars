@@ -9,7 +9,7 @@
     <properties>
         <server.id>my.aws</server.id>
         <region>ap-southeast-2</region>
-        <application>myapp</application>
+        <application>github-stars</application>
         <artifact.bucket>${application}-artifacts</artifact.bucket>
         <proxy.host></proxy.host>
         <!-- as long as proxy.host is blank this property won't be used -->
@@ -101,6 +101,7 @@
                                 <artifactObjectName>${project.artifactId}-${project.version}${timestampSuffix}.jar</artifactObjectName>
                                 <stage>api</stage>
                                 <application>${application}</application>
+                                <applicationBucket>${application}-${aws.account.id}</applicationBucket>
                             </parameters>
                             <template>src/main/aws/cloudformation.yaml</template>
                             <intervalSeconds>2</intervalSeconds>
