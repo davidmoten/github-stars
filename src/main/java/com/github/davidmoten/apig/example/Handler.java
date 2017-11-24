@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.kohsuke.github.GitHub;
-import org.kohsuke.github.GitHubBuilder;
 
 import com.amazonaws.services.lambda.runtime.Context;
 import com.github.davidmoten.aws.helper.StandardRequestBodyPassThrough;
