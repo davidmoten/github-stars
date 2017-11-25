@@ -35,6 +35,13 @@ Parameters:
 
 Resources:
 
+  ApplicationBucket:
+    Type: AWS::S3::Bucket
+    DependsOn: InvokeLambdaFunctionConvertPermission
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Ref applicationBucket
+
   LambdaScheduleRule:
     Type: AWS::Events::Rule
     Properties:
