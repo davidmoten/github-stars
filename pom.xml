@@ -162,7 +162,7 @@
                                     </includes>
                                 </filter>
                                 <filter>
-                                    <artifact>org.apache.commons:commons-logging</artifact>
+                                    <artifact>commons-logging:commons-logging</artifact>
                                     <includes>
                                         <include>**</include>
                                     </includes>
