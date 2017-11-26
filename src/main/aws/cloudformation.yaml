@@ -272,7 +272,7 @@ Resources:
                 # escape the substitution using ! before stageVariables.function
                 uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${application}/invocations"
                 passthroughBehavior: "when_no_match"
-                httpMethod: "GET"
+                httpMethod: "POST"
                 contentHandling: "CONVERT_TO_TEXT"
                 type: "aws"
         securityDefinitions:
