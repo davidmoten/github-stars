@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.kohsuke.github.GitHub;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.model.ListObjectsRequest;
@@ -21,6 +22,7 @@ import com.github.davidmoten.aws.helper.StandardRequestBodyPassThrough;
 public class Handler {
 
     public String handle(Map<String, Object> input, Context context) {
+        LambdaLogger log = context.getLogger();
 
         // expects full request body passthrough from api gateway integration
         // request
@@ -49,6 +51,7 @@ public class Handler {
                             try {
                                 int count = g.getRepository(o.getKey()).getStargazersCount();
                                 s3.putObject(bucketName, o.getKey(), String.valueOf(count));
+                                log.log("set count for project " + o.getKey() + " to " + count);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
