@@ -26,9 +26,7 @@ public class Handler {
         // request
         StandardRequestBodyPassThrough request = StandardRequestBodyPassThrough.from(input);
 
-        String name = request.queryStringParameter("name")
-                .orElseThrow(() -> new IllegalArgumentException("parameter 'name' not found"));
-
+        String name = request.queryStringParameter("name").orElse("scheduled");
         String bucketName = System.getenv("BUCKET_NAME");
         AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
         GitHub g;
