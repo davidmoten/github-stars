@@ -235,8 +235,8 @@ Resources:
                   schema:
                     $ref: "#/definitions/Empty"
                   headers:
-                    Access-Control-Allow-Origin: ""
-                    type: "string"
+                    Access-Control-Allow-Origin: 
+                      type: "string"
               security:
                 - api_key: []
               x-amazon-apigateway-integration:
