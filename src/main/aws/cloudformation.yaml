@@ -307,7 +307,7 @@ Resources:
                   application/json: "{\"statusCode\": 200}"
                 passthroughBehavior: "when_no_match"
                 type: "mock"                
-                securityDefinitions:
+        securityDefinitions:
           api_key:
             type: "apiKey"
             name: "x-api-key"
