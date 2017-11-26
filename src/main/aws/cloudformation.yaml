@@ -94,7 +94,20 @@ Resources:
                 Resource:
                   - !Sub 'arn:aws:s3:::${applicationBucket}/*'
                   - !Sub 'arn:aws:s3:::${applicationBucket}'
-        
+        # don't bother with modal name because is embedded policy
+        - PolicyName: lambda-cloud-watch-logs-policy
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action: 'logs:CreateLogGroup'
+                Resource: !Sub 'arn:aws:logs:${AWS::Region}:${AWS::AccountId}:*'
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource:
+                  - !Sub "arn:aws:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/${application}:*"
 
   LambdaFunction:
     Type: AWS::Lambda::Function
@@ -259,7 +272,7 @@ Resources:
                 # escape the substitution using ! before stageVariables.function
                 uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:${application}/invocations"
                 passthroughBehavior: "when_no_match"
-                httpMethod: "POST"
+                httpMethod: "GET"
                 contentHandling: "CONVERT_TO_TEXT"
                 type: "aws"
         securityDefinitions:
@@ -271,34 +284,3 @@ Resources:
           Empty:
             type: "object"
 
-  OptionsMethod:
-    Type: AWS::ApiGateway::Method
-    Properties:
-      AuthorizationType: NONE
-      RestApiId:
-        Ref: Api
-      ResourceId: 
-        !GetAtt [Api, RootResourceId]
-      HttpMethod: OPTIONS
-      Integration:
-        IntegrationResponses:
-        - StatusCode: 200
-          ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-            method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
-            method.response.header.Access-Control-Allow-Origin: "'*'"
-          ResponseTemplates:
-            application/json: ''
-        PassthroughBehavior: WHEN_NO_MATCH
-        RequestTemplates:
-          application/json: '{"statusCode": 200}'
-        Type: MOCK
-      MethodResponses:
-      - StatusCode: 200
-        ResponseModels:
-          application/json: 'Empty'
-        ResponseParameters:
-            method.response.header.Access-Control-Allow-Headers: true
-            method.response.header.Access-Control-Allow-Methods: true
-            method.response.header.Access-Control-Allow-Origin: true
-  
