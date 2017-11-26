@@ -240,6 +240,8 @@ Resources:
                 responses:
                   default:
                     statusCode: "200"
+                    responseParameters:
+                        method.response.header.Access-Control-Allow-Origin: "'*'"
                     responseTemplates:
                       ## this bit of weirdness is so quoted text doesn't get returned (json)
                       text/plain: "#set($inputRoot = $input.path('$')) \n$inputRoot"
@@ -275,7 +277,37 @@ Resources:
                 httpMethod: "POST"
                 contentHandling: "CONVERT_TO_TEXT"
                 type: "aws"
-        securityDefinitions:
+            
+            options:
+              consumes:
+              - "application/json"
+              produces:
+              - "application/json"
+              responses:
+                200:
+                  description: "200 response"
+                  schema:
+                    $ref: "#/definitions/Empty"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: "string"
+                    Access-Control-Allow-Methods:
+                      type: "string"
+                    Access-Control-Allow-Headers:
+                      type: "string"
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: "200"
+                    responseParameters:
+                      method.response.header.Access-Control-Allow-Methods: "'GET,OPTIONS'"
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                requestTemplates:
+                  application/json: "{\"statusCode\": 200}"
+                passthroughBehavior: "when_no_match"
+                type: "mock"                
+                securityDefinitions:
           api_key:
             type: "apiKey"
             name: "x-api-key"
