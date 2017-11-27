@@ -76,7 +76,8 @@ public class Handler {
         }
     }
 
-    private int hourOfDay(long now) {
+    // visible for testing
+    static int hourOfDay(long now) {
         return (int) ((now % TimeUnit.DAYS.toMillis(1)) / TimeUnit.HOURS.toMillis(1));
     }
 }
