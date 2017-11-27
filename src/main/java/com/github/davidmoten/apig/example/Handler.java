@@ -38,6 +38,7 @@ public class Handler {
             throw new RuntimeException(e1);
         }
         if ("scheduled".equals(name)) {
+            log.log("checking for updates to project star counts");
             long now = System.currentTimeMillis();
             int hourOfDay = hourOfDay(now);
             s3.listObjects(new ListObjectsRequest().withBucketName(bucketName).withMaxKeys(1000))
@@ -47,6 +48,7 @@ public class Handler {
                         boolean expired = now - o.getLastModified().getTime() >= TimeUnit.HOURS
                                 .toMillis(24);
                         boolean isSlot = hourOfDay == Math.abs(o.getKey().hashCode()) % 24;
+                        log.log("checking " + o.getKey());
                         if (expired && isSlot) {
                             try {
                                 int count = g.getRepository(o.getKey()).getStargazersCount();
